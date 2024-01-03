@@ -1,5 +1,3 @@
-import sys
-
 from c_functions import *
 import random
 
@@ -51,12 +49,13 @@ for i in range(4):
     send_data(decrypted_messages_without_string[i], 5000+i)
 
 #--------------------------------SECOND PART------------------------------------
+idx = [0, 1, 2, 3]
+random.shuffle(idx)
+
 signed_messages = [receive_data(i) for i in range(5000, 5004)]
 check_amount_of_messages(voters, signed_messages)
 
 decrypted_messages = [receive_data(i) for i in range(5000, 5004)]
-for i in range(4):
-    print(sys.getsizeof(decrypted_messages[i]))
 
 public_key_b_elgamal = deserialize_public_key_elgamal(receive_data(5006))
 signed_messages = [receive_data(i) for i in range(5000, 5004)]
@@ -69,7 +68,7 @@ for i in range(4):
 decrypted_messages_c = []
 for message in decrypted_messages:
     decrypted_messages_c.append(decrypt(message, private_key_c))
-    print(sys.getsizeof(decrypt(message, private_key_c)))
+reorder_list(decrypted_messages_c, idx)
 
 check_encrypted_message(encrypted_messages_for_check, decrypted_messages_c)
 
@@ -84,6 +83,7 @@ signed_messages = []
 for message in decrypted_messages_c:
     signature = sign_message(private_key_elgamal, message)
     signed_messages.append(signature)
+reorder_list(signed_messages, idx)
 
 for j in range(3):
     for i in range(4):
@@ -103,5 +103,5 @@ for i in range(4):
 
 final_result = []
 for message in decrypted_messages_d:
-    final_result.append(extract_last_8_bytes(message))
+    final_result.append(remove_string(message, 8))
 print(final_result)

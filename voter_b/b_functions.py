@@ -19,7 +19,7 @@ def send_data(data, port):
     s.close()
 
 
-def receive_data(port, comment=None):
+def receive_data(port):
     s = socket.socket()
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s.bind(('127.0.0.1', port))
@@ -85,7 +85,6 @@ def encrypt(message, public_key):
         )
         encrypted_blocks.append(ciphertext)
 
-    # Повертаємо об'єднані зашифровані блоки
     return b''.join(encrypted_blocks)
 
 
@@ -139,10 +138,6 @@ def deserialize_public_key(serialized_key):
         backend=default_backend()
     )
     return public_key
-
-
-def extract_last_4_bytes(data):
-    return data[-4:]
 
 
 def check_string(string, strings):
@@ -208,3 +203,7 @@ def check_amount_of_messages(voters, votes):
         print('Amount of votes is correct!')
     else:
         raise Exception('Amount of votes is not correct!')
+
+
+def reorder_list(lst, idx):
+    return [lst[i] for i in idx]

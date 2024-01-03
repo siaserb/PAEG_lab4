@@ -1,5 +1,4 @@
 from a_functions import *
-import sys
 import random
 
 voters = ['A', 'B', 'C', 'D']
@@ -41,10 +40,9 @@ random.shuffle(decrypted_messages_without_string)
 for i in range(4):
     send_data(decrypted_messages_without_string[i], 5000+i)
 
-for i in range(4):
-    print(sys.getsizeof(decrypted_messages_without_string[i]))
-
 #--------------------------------SECOND PART------------------------------------
+idx = [0, 1, 2, 3]
+random.shuffle(idx)
 #Отримуємо повідомлення виду FcA(FcB(FcC(FcD(Ev, Rs1)))))
 decrypted_messages_without_strings = [receive_data(i) for i in range(5000, 5004)]
 
@@ -52,7 +50,7 @@ decrypted_messages_without_strings = [receive_data(i) for i in range(5000, 5004)
 decrypted_messages = []
 for message in decrypted_messages_without_strings:
     decrypted_messages.append(decrypt(message, private_key_a))
-    print(sys.getsizeof(decrypt(message, private_key_a)))
+reorder_list(decrypted_messages, idx)
 
 #Перевіряємо наявність нашого рядка серед зашифрованих
 check_encrypted_message(encrypted_messages_for_check, decrypted_messages)
@@ -73,11 +71,11 @@ signed_messages = []
 for message in decrypted_messages:
     signature = sign_message(private_key_elgamal, message)
     signed_messages.append(signature)
+reorder_list(signed_messages, idx)
 
 for j in range(3):
     for i in range(4):
         send_data(signed_messages[i], 5000+i)
-        print(sys.getsizeof(signed_messages[i]))
 
 signed_messages = [receive_data(i) for i in range(5000, 5004)]
 check_amount_of_messages(voters, signed_messages)
@@ -87,11 +85,9 @@ check_amount_of_messages(voters, signed_messages)
 
 signed_messages = [receive_data(i) for i in range(5000, 5004)]
 check_amount_of_messages(voters, signed_messages)
-
 
 #------------------------------FINAL-------------------------------------
 public_key_d_elgamal = deserialize_public_key_elgamal(receive_data(6000))
-print(public_key_d_elgamal)
 
 decrypted_messages_d = [receive_data(i) for i in range(5000, 5004)]
 check_encrypted_message(decrypted_messages_d, encrypted_messages_for_check)
